@@ -1,0 +1,24 @@
+{
+    "name": "aws-web-performance-monitor",
+    "version": "0.1.0",
+    "main": "bin/index.js",
+    "types": "bin/index.d.ts",
+    "bin": {
+        "aws-web-performance-monitor": "bin/aws-web-performance-monitor.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "watch": "tsc -w",
+        "cdk": "cdk"
+    },
+    "devDependencies": {
+        "@types/node": "^8.9.4",
+        "typescript": "^3.1.2",
+        "aws-cdk": "^0.18.1"
+    },
+    "dependencies": {
+        "@aws-cdk/aws-sns": "^0.18.1",
+        "@aws-cdk/aws-sqs": "^0.18.1",
+        "@aws-cdk/cdk": "^0.18.1"
+    }
+}
