@@ -1,24 +1,33 @@
 {
-    "name": "aws-web-performance-monitor",
-    "version": "0.1.0",
-    "main": "bin/index.js",
-    "types": "bin/index.d.ts",
-    "bin": {
-        "aws-web-performance-monitor": "bin/aws-web-performance-monitor.js"
-    },
-    "scripts": {
-        "build": "tsc",
-        "watch": "tsc -w",
-        "cdk": "cdk"
-    },
-    "devDependencies": {
-        "@types/node": "^8.9.4",
-        "typescript": "^3.1.2",
-        "aws-cdk": "^0.18.1"
-    },
-    "dependencies": {
-        "@aws-cdk/aws-sns": "^0.18.1",
-        "@aws-cdk/aws-sqs": "^0.18.1",
-        "@aws-cdk/cdk": "^0.18.1"
-    }
+  "name": "aws-web-performance-monitor",
+  "version": "0.1.0",
+  "main": "bin/index.js",
+  "types": "bin/index.d.ts",
+  "bin": {
+    "aws-web-performance-monitor": "bin/aws-web-performance-monitor.js"
+  },
+  "scripts": {
+    "build": "rm -fr cdk.out && tsc",
+    "cdk": "cdk",
+    "synth": "cdk synth",
+    "build:chrome": "cd bin/collector/layer/ && ./prepare-chromium.sh",
+    "deploy": "npm run build && cdk deploy RootStack",
+    "deploy:all": "npm run build && cdk deploy \"*\""
+  },
+  "devDependencies": {
+    "@types/node": "^8.9.4",
+    "aws-cdk": "^1.13.1",
+    "typescript": "^3.1.2"
+  },
+  "dependencies": {
+    "@aws-cdk/aws-cloudfront": "^1.13.1",
+    "@aws-cdk/aws-cloudwatch": "^1.13.1",
+    "@aws-cdk/aws-dynamodb": "^1.13.1",
+    "@aws-cdk/aws-dynamodb-global": "^1.13.1",
+    "@aws-cdk/aws-events": "^1.13.1",
+    "@aws-cdk/aws-events-targets": "^1.13.1",
+    "@aws-cdk/aws-lambda": "^1.13.1",
+    "@aws-cdk/aws-s3": "^1.13.1",
+    "@aws-cdk/aws-s3-deployment": "^1.13.1"
+  }
 }
