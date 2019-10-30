@@ -10,7 +10,7 @@ export default interface Project {
   measureHealth: boolean;
   headers: StringMap;
   timeout: number; // in MS
-  method: 'GET' | 'POST';
+  method: 'get' | 'post';
 
   stats: {
     uptime: number;
