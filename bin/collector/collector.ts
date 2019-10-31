@@ -53,7 +53,7 @@ class CollectorStack extends Stack {
     func.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: ['dynamodb:Query'],
+        actions: ['dynamodb:Query', 'dynamodb:Scan', 'dynamodb:PutItem'],
         resources: [props.projectsTableArn],
       }),
     );
