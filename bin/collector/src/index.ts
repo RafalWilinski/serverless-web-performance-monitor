@@ -26,7 +26,7 @@ const insertMetrics = (metricsDatapoint: MetricsDatapoint) =>
   dynamoDB.put({
     TableName: process.env.METRICS_TABLE_ARN!.split('/').slice(-1)[0],
     Item: metricsDatapoint,
-  });
+  }).promise();
 
 const processProject = async (project: Project) => {
   console.log(`Processing project ${project.id}, URL: ${project.endpoint}`);
@@ -47,18 +47,22 @@ const processProject = async (project: Project) => {
       time: project.measureRequestDetails,
     });
 
-    console.log(data);
-
     healthMetric.value = 1;
+    console.log(data.timings, data.timingPhases);
 
     if (project.measureRequestDetails) {
-      const metricsObjects = Object.keys(data.timings!).map((metricName) => ({
+      const metricsObjects = [...Object.keys(data.timings), ...Object.keys(data.timingPhases)].map((metricName) => ({
         id: `${project.id}#`,
         date: (+new Date()).toString(),
         unit: 'ms',
         metricName,
         value: (data.timings! as any)[metricName],
       }));
+
+      console.log(`Inserting metrics`, {
+        ...data.timings,
+        ...data.timingPhases,
+      });
 
       await Promise.all(metricsObjects.map((metric) => insertMetrics(metric)));
     }
