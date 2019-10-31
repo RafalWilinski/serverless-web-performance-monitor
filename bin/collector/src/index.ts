@@ -15,7 +15,7 @@ const response = (body: string | any, statusCode = 200) => ({
 const getAllProjects = async (): Promise<Project[]> => {
   const { Items } = await dynamoDB
     .scan({
-      TableName: process.env.PROJECTS_TABLE_ARN!
+      TableName: process.env.PROJECTS_TABLE_ARN!.split('/').slice(-1)[0]
     })
     .promise();
 
@@ -24,13 +24,13 @@ const getAllProjects = async (): Promise<Project[]> => {
 
 const insertMetrics = (metricsDatapoint: MetricsDatapoint) =>
   dynamoDB.put({
-    TableName: process.env.METRICS_TABLE_ARN!,
+    TableName: process.env.METRICS_TABLE_ARN!.split('/').slice(-1)[0],
     Item: metricsDatapoint
   });
 
 const processProject = async (project: Project) => {
   console.log(`Processing project ${project.id}, URL: ${project.endpoint}`);
-  
+
   const healthMetric: MetricsDatapoint = {
     id: `${project.id}`,
     date: (+new Date()).toString(),
@@ -73,6 +73,8 @@ const processProject = async (project: Project) => {
   if (project.measureLighthouseDetails) {
     console.log(`Running Lightouse test against ${project.id}, URL: ${project.endpoint}`);
     // to be added
+
+
   }
 
   return;

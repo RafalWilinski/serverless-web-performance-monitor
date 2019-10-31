@@ -7,12 +7,13 @@
     "aws-web-performance-monitor": "bin/aws-web-performance-monitor.js"
   },
   "scripts": {
-    "build": "rm -fr cdk.out && tsc",
+    "build:cdk": "rm -fr cdk.out && tsc",
+    "build:frontend": "cd frontend && npm run build",
+    "build:chrome": "cd bin/collector/layer/ && ./prepare-chromium.sh",
     "cdk": "cdk",
     "synth": "cdk synth",
-    "build:chrome": "cd bin/collector/layer/ && ./prepare-chromium.sh",
     "deploy": "npm run build && cdk deploy RootStack",
-    "deploy:all": "npm run build && cdk deploy \"*\""
+    "deploy:all": "npm run build:cdk && npm run build:frontend && npm run build:chrome && cdk deploy \"*\""
   },
   "devDependencies": {
     "@types/node": "^8.9.4",
