@@ -4,3 +4,4 @@ node_modules
 cdk.out
 headless_shell
 bin/collector/layer/chrome-aws-lambda
+bin/collector/layer/chrome-aws-lambda

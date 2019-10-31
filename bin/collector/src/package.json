@@ -8,12 +8,14 @@
   "dependencies": {
     "puppeteer": "1.20.0",
     "request": "2.88.0",
+    "request-promise-native": "^1.0.7",
     "source-map-support": "0.5.16"
   },
   "devDependencies": {
     "@types/aws-lambda": "8.10.33",
     "@types/puppeteer": "1.20.2",
     "@types/request": "2.48.3",
+    "@types/request-promise-native": "^1.0.17",
     "aws-sdk": "2.552.0",
     "typescript": "3.6.4"
   }
