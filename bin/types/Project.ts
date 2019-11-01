@@ -7,10 +7,9 @@ export default interface Project {
   endpoint: string;
   measureRequestDetails: boolean;
   measureLighthouseDetails: boolean;
-  measureHealth: boolean;
   headers: StringMap;
   timeout: number; // in MS
-  method: 'get' | 'post';
+  method: "get" | "post";
 
   stats: {
     uptime: number;
