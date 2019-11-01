@@ -34,7 +34,7 @@ const insertRequestDetails = (project: Project, timings: any) => {
   const metricsObjects = Object.keys(timings).map(metricName => ({
     id: `${project.id}`,
     date: (+new Date()).toString(),
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION!,
     unit: "ms",
     metricName,
     value: timings[metricName]
@@ -51,7 +51,7 @@ const processProject = async (project: Project) => {
   const healthMetric: MetricsDatapoint = {
     id: `${project.id}`,
     date: (+new Date()).toString(),
-    region: process.env.AWS_REGION,
+    region: process.env.AWS_REGION!,
     unit: "Reachable",
     metricName: "Health",
     value: 0
