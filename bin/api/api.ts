@@ -1,4 +1,4 @@
-// import cfn = require('@aws-cdk/aws-cloudformation');
+import apigateway = require("@aws-cdk/aws-apigateway");
 import lambda = require("@aws-cdk/aws-lambda");
 import path = require("path");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
@@ -13,26 +13,37 @@ class APIStack extends Stack {
   constructor(parent: Construct, name: string, props: APIStackProps) {
     super(parent, name, props);
 
-    const func = new lambda.Function(this, `MetricsAPI`, {
+    const metricsService = new lambda.Function(this, `MetricsAPI`, {
       description: "Metrics API between frontend and metrics",
       memorySize: 512,
       runtime: lambda.Runtime.NODEJS_10_X,
       handler: "index.handler",
-      code: lambda.AssetCode.fromAsset(path.join(__dirname, "src")),
+      code: lambda.AssetCode.fromAsset(path.join(__dirname, "metricsService")),
       environment: {
-        PROJECTS_TABLE_ARN: props.projectsTableArn,
         METRICS_TABLE_ARN: props.metricsTableArn
       }
     });
 
-    func.addToRolePolicy(
+    metricsService.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["dynamodb:Query"],
         resources: [props.metricsTableArn]
       })
     );
-    func.addToRolePolicy(
+
+    const projectsService = new lambda.Function(this, `MetricsAPI`, {
+      description: "Projects API between frontend and metrics",
+      memorySize: 512,
+      runtime: lambda.Runtime.NODEJS_10_X,
+      handler: "index.handler",
+      code: lambda.AssetCode.fromAsset(path.join(__dirname, "projectsService")),
+      environment: {
+        PROJECTS_TABLE_ARN: props.projectsTableArn
+      }
+    });
+
+    projectsService.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
         actions: ["dynamodb:Query", "dynamodb:PutItem"],
@@ -44,9 +55,18 @@ class APIStack extends Stack {
       restApiName: "Metrics Service"
     });
 
-    const getWidgetsIntegration = new apigateway.LambdaIntegration(func);
+    const metrics = api.root.addResource("metrics");
+    metrics.addMethod("GET", new apigateway.LambdaIntegration(metricsService));
 
-    api.root.addMethod("GET", getWidgetsIntegration);
+    const projects = api.root.addResource("projects");
+    projects.addMethod(
+      "GET",
+      new apigateway.LambdaIntegration(projectsService)
+    );
+    projects.addMethod(
+      "POST",
+      new apigateway.LambdaIntegration(projectsService)
+    );
   }
 }
 

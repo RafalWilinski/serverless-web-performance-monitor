@@ -5,12 +5,9 @@ import * as request from "request-promise-native";
 import "source-map-support/register";
 import Project from "../../types/Project";
 import MetricsDatapoint from "../../types/MetricsDatapoint";
+import response from "../../utils/lambdaResponse";
 
 const dynamoDB = new DynamoDB.DocumentClient();
-const response = (body: string | any, statusCode = 200) => ({
-  statusCode,
-  body: typeof body === "string" ? JSON.stringify(body, null, 2) : body
-});
 
 const getAllProjects = async (): Promise<Project[]> => {
   const { Items } = await dynamoDB

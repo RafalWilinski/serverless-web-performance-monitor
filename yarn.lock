@@ -11,7 +11,7 @@
     "@aws-cdk/cx-api" "1.15.0"
     minimatch "^3.0.4"
 
-"@aws-cdk/aws-apigateway@1.15.0":
+"@aws-cdk/aws-apigateway@1.15.0", "@aws-cdk/aws-apigateway@^1.15.0":
   version "1.15.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-apigateway/-/aws-apigateway-1.15.0.tgz#cb8765a5a48486f352fcfd73521e3d311961f6c6"
   integrity sha512-KP88hEHYwnQ8inI6Nr8j4yv8PHXl5K1B50bZHF69ESaLhRd57T7OelSKSLZOQPMEZgmgT9blaqKAO1/47jABpQ==
