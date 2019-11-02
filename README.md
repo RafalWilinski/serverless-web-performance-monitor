@@ -1,7 +1,11 @@
-# Useful commands
+# Serverless Web Performance Monitor
 
- * `npm run build`   compile typescript to js
- * `npm run watch`   watch for changes and compile
- * `cdk deploy`      deploy this stack to your default AWS account/region
- * `cdk diff`        compare deployed stack with current state
- * `cdk synth`       emits the synthesized CloudFormation template
+Monitor your page/endpoint speed from multiple locations around the world, for free!
+
+### Useful commands
+
+- `yarn deploy:all` compiles all lambdas, CDK Stack, Frontend application and deploys it to the cloud
+
+### Infrastructure
+
+![Infrastructure](./assets/infra.png "Infrastructure")
