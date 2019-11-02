@@ -4,7 +4,7 @@ import useSWR from "swr";
 const App: React.FC = () => {
   const { data: projects } = useSWR("/api/projects");
   const { data: metrics, error } = useSWR(
-    () => `/api/metrics/${projects[0].id}`
+    () => `/api/metrics/?id=${projects[0].id}`
   );
 
   if (!projects) {

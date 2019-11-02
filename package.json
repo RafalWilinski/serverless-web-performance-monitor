@@ -13,7 +13,7 @@
     "cdk": "cdk",
     "synth": "cdk synth",
     "deploy": "npm run build && cdk deploy RootStack",
-    "deploy:all": "npm run build:cdk && npm run build:frontend && npm run build:chrome && cdk deploy \"*\""
+    "deploy:all": "npm run build:cdk && npm run build:frontend && cdk deploy \"*\""
   },
   "devDependencies": {
     "@types/node": "^8.9.4",

@@ -46,7 +46,7 @@ class APIStack extends Stack {
     projectsService.addToRolePolicy(
       new PolicyStatement({
         effect: Effect.ALLOW,
-        actions: ["dynamodb:Query", "dynamodb:PutItem"],
+        actions: ["dynamodb:Scan", "dynamodb:PutItem"],
         resources: [props.projectsTableArn]
       })
     );
