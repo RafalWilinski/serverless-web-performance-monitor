@@ -10,10 +10,12 @@ interface APIStackProps extends StackProps {
 }
 
 class APIStack extends Stack {
+  public api: apigateway.RestApi;
+
   constructor(parent: Construct, name: string, props: APIStackProps) {
     super(parent, name, props);
 
-    const metricsService = new lambda.Function(this, `MetricsAPI`, {
+    const metricsService = new lambda.Function(this, `MetricsService`, {
       description: "Metrics API between frontend and metrics",
       memorySize: 512,
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -32,7 +34,7 @@ class APIStack extends Stack {
       })
     );
 
-    const projectsService = new lambda.Function(this, `MetricsAPI`, {
+    const projectsService = new lambda.Function(this, `ProjectsService`, {
       description: "Projects API between frontend and metrics",
       memorySize: 512,
       runtime: lambda.Runtime.NODEJS_10_X,
@@ -54,6 +56,7 @@ class APIStack extends Stack {
     const api = new apigateway.RestApi(this, "metrics-api", {
       restApiName: "Metrics Service"
     });
+    this.api = api;
 
     const metrics = api.root.addResource("metrics");
     metrics.addMethod("GET", new apigateway.LambdaIntegration(metricsService));

@@ -1,7 +1,7 @@
 import { DynamoDB } from "aws-sdk";
 import { APIGatewayProxyHandler } from "aws-lambda";
 
-import response from "../../utils/lambdaResponse";
+import response from "./utils/lambdaResponse";
 
 const dynamoDB = new DynamoDB.DocumentClient();
 const TableName = process.env.METRICS_TABLE_ARN!.split("/").slice(-1)[0];

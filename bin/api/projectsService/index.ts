@@ -1,8 +1,8 @@
 import { DynamoDB } from "aws-sdk";
 import { APIGatewayProxyHandler } from "aws-lambda";
 
-import response from "../../utils/lambdaResponse";
-import uuid from "../../utils/uuid";
+import response from "./utils/lambdaResponse";
+import uuid from "./utils/uuid";
 
 const dynamoDB = new DynamoDB.DocumentClient();
 const TableName = process.env.PROJECTS_TABLE_ARN!.split("/").slice(-1)[0];

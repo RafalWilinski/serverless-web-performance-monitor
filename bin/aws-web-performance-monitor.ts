@@ -6,6 +6,7 @@ import FrontendStack from "./frontend/frontend";
 import { Construct } from "@aws-cdk/core";
 import { GlobalTable } from "@aws-cdk/aws-dynamodb-global";
 import { Table, AttributeType, BillingMode } from "@aws-cdk/aws-dynamodb";
+import APIStack from "./api/api";
 
 const region = process.env.REGION || "us-east-1";
 const regions = process.env.COLLECTOR_REGIONS
@@ -26,8 +27,6 @@ class RootStack extends cdk.Stack {
 
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
-
-    new FrontendStack(this, "FrontendStack");
 
     if (process.env.USE_GLOBAL_TABLE) {
       this.regionalMetricsTables = new GlobalTable(this, "metricsTable", {
@@ -52,6 +51,14 @@ class RootStack extends cdk.Stack {
       partitionKey: { name: "id", type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       tableName: "WebPerformanceMonitorProjects"
+    });
+
+    const apiStack = new APIStack(this, "APIStack", {
+      projectsTableArn: this.projectsTable.tableArn,
+      metricsTableArn: this.regionalMetricsTables[0].tableArn
+    });
+    new FrontendStack(this, "FrontendStack", {
+      apiUrl: apiStack.api.url
     });
   }
 }
