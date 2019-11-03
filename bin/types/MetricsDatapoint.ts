@@ -1,3 +1,7 @@
+interface NumMap {
+  [key: string]: number;
+}
+
 export default interface MetricsDatapoint {
   id: string;
   date: string;
@@ -5,4 +9,5 @@ export default interface MetricsDatapoint {
   value: number;
   metricName: string;
   unit: string;
+  timings?: NumMap;
 }

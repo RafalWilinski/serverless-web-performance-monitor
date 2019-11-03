@@ -27,21 +27,6 @@ const insertMetrics = (metricsDatapoint: MetricsDatapoint) =>
     })
     .promise();
 
-const insertRequestDetails = (project: Project, timings: any) => {
-  const metricsObjects = Object.keys(timings).map(metricName => ({
-    id: `${project.id}`,
-    date: (+new Date()).toString(),
-    region: process.env.AWS_REGION!,
-    unit: "ms",
-    metricName,
-    value: timings[metricName]
-  }));
-
-  console.log(`[PROJECT_${project.id}] Inserting metrics`, timings);
-
-  return Promise.all(metricsObjects.map(metric => insertMetrics(metric)));
-};
-
 const processProject = async (project: Project) => {
   console.log(`[PROJECT_${project.id}], URL: ${project.endpoint}`);
 
@@ -72,7 +57,7 @@ const processProject = async (project: Project) => {
     healthMetric.value = 1;
 
     if (project.measureRequestDetails) {
-      await insertRequestDetails(project, timings);
+      healthMetric.timings = timings;
     }
   } catch (error) {
     console.log(`[PROJECT_${project.id}] Error!`);
