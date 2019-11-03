@@ -34,7 +34,10 @@ const getMetrics = (event?: any) => {
       TableName,
       KeyConditionExpression: "#PROXY_id = :pkey",
       ExpressionAttributeValues,
-      FilterExpression: FilterExpressions.join(" and "),
+      FilterExpression:
+        FilterExpressions.length > 0
+          ? FilterExpressions.join(" and ")
+          : undefined,
       ExpressionAttributeNames
     })
     .promise();

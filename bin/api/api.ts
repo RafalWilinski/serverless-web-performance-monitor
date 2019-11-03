@@ -3,6 +3,7 @@ import lambda = require("@aws-cdk/aws-lambda");
 import path = require("path");
 import { Effect, PolicyStatement } from "@aws-cdk/aws-iam";
 import { Construct, Stack, StackProps } from "@aws-cdk/core";
+import { Cors } from "@aws-cdk/aws-apigateway";
 
 interface APIStackProps extends StackProps {
   projectsTableArn: string;
@@ -60,6 +61,9 @@ class APIStack extends Stack {
 
     const metrics = api.root.addResource("metrics");
     metrics.addMethod("GET", new apigateway.LambdaIntegration(metricsService));
+    metrics.addCorsPreflight({
+      allowOrigins: Cors.ALL_ORIGINS
+    });
 
     const projects = api.root.addResource("projects");
     projects.addMethod(
@@ -70,6 +74,9 @@ class APIStack extends Stack {
       "POST",
       new apigateway.LambdaIntegration(projectsService)
     );
+    projects.addCorsPreflight({
+      allowOrigins: Cors.ALL_ORIGINS
+    });
   }
 }
 
