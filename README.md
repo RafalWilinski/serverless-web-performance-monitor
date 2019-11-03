@@ -13,8 +13,6 @@
 
 > Monitor your page/endpoint speed from multiple locations around the world, for free!
 
-### 🏠 [Homepage](https://servicefull.cloud/)
-
 ## Install
 
 ```sh
