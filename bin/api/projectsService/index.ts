@@ -40,9 +40,13 @@ export const handler: APIGatewayProxyHandler = async (event, _context) => {
         project: await createProject(JSON.parse(event.body!))
       });
     } catch (error) {
-      return response({ error }, 400);
+      return response({ error: JSON.stringify(error) }, 400);
     }
   } else {
-    return response({ projects: (await getProjects()).Items });
+    try {
+      return response({ projects: (await getProjects()).Items });
+    } catch (error) {
+      return response({ error: JSON.stringify(error) }, 400);
+    }
   }
 };

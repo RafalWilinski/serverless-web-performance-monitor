@@ -6,17 +6,43 @@ import response from "./utils/lambdaResponse";
 const dynamoDB = new DynamoDB.DocumentClient();
 const TableName = process.env.METRICS_TABLE_ARN!.split("/").slice(-1)[0];
 
-const getMetrics = (event: any) =>
-  dynamoDB
-    .get({
+const getMetrics = (event?: any) => {
+  const FilterExpressions: string[] = [];
+  const ExpressionAttributeValues: any = {
+    ":pkey": event.id
+  };
+  const ExpressionAttributeNames: any = {
+    "#PROXY_id": "id"
+  };
+
+  Object.keys(event).forEach(key => {
+    if (key !== "id") {
+      ExpressionAttributeValues[`:${key}`] = event[key];
+      ExpressionAttributeNames[`#PROXY_${key}`] = key;
+      FilterExpressions.push(`#PROXY_${key} = :${key}`);
+    }
+  });
+
+  console.log(
+    ExpressionAttributeNames,
+    ExpressionAttributeValues,
+    FilterExpressions
+  );
+
+  return dynamoDB
+    .query({
       TableName,
-      Key: {
-        id: event.queryStringParameters.id
-      }
+      KeyConditionExpression: "#PROXY_id = :pkey",
+      ExpressionAttributeValues,
+      FilterExpression: FilterExpressions.join(" and "),
+      ExpressionAttributeNames
     })
     .promise();
+};
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
   console.log(event.queryStringParameters);
-  return response({ metrics: await getMetrics(event) });
+  return response({
+    metrics: (await getMetrics(event.queryStringParameters)).Items
+  });
 };
