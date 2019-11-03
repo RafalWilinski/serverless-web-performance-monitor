@@ -1,8 +1,5 @@
 <h1 align="center">Serverless Web Performance Monitor</h1>
 <p>
-  <a href="https://github.com/gatsbyjs/gatsby-starter-blog/graphs/commit-activity">
-    <img alt="Maintenance" src="https://img.shields.io/badge/Maintained%3F-yes-green.svg" target="_blank" />
-  </a>
   <a href="https://github.com/gatsbyjs/gatsby-starter-blog/blob/master/LICENSE">
     <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" target="_blank" />
   </a>
@@ -11,7 +8,7 @@
   </a>
 </p>
 
-> Monitor your page/endpoint speed from multiple locations around the world, for free!
+> Self-hosted, cloud-native monitoring solution for your page/endpoint speed from multiple locations around the world.
 
 ## Install
 

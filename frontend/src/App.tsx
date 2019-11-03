@@ -1,10 +1,9 @@
 import React from "react";
 import useSWR from "swr";
-import { groupBy } from "lodash";
+import colorConvert from "color-convert";
 import {
   BarChart,
   Bar,
-  Cell,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -28,14 +27,27 @@ const App: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  console.log(metricsData.metrics);
+  const chartData = metricsData.metrics.map((metric: any) => ({
+    name: metric.date,
+    ...metric.timings
+  }));
+
+  const bars = [
+    "total",
+    "dns",
+    "connect",
+    "tcp",
+    "firstByte",
+    "response",
+    "lookup"
+  ];
 
   return (
     <div className="App">
       <BarChart
         width={500}
         height={300}
-        data={metricsData.metrics}
+        data={chartData}
         margin={{
           top: 20,
           right: 30,
@@ -48,8 +60,13 @@ const App: React.FC = () => {
         <YAxis />
         <Tooltip />
         <Legend />
-        <Bar dataKey="pv" stackId="a" fill="#8884d8" />
-        <Bar dataKey="uv" stackId="a" fill="#82ca9d" />
+        {bars.map((bar: string, index: number) => (
+          <Bar
+            dataKey={bar}
+            stackId="a"
+            fill={`#${colorConvert.hsl.hex([100 + index * 45, 70, 50])}`}
+          />
+        ))}
       </BarChart>
     </div>
   );
