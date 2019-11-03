@@ -7,14 +7,14 @@
     "@types/node": "12.12.1",
     "@types/react": "16.9.11",
     "@types/react-dom": "16.9.3",
-    "color-convert": "^2.0.1",
-    "lodash": "^4.17.15",
-    "react": "^16.11.0",
-    "react-dom": "^16.11.0",
+    "color-convert": "2.0.1",
+    "lodash": "4.17.15",
+    "react": "16.11.0",
+    "react-dom": "16.11.0",
     "react-scripts": "3.2.0",
-    "rebass": "^4.0.7",
-    "recharts": "^1.8.5",
-    "swr": "^0.1.5",
+    "rebass": "4.0.7",
+    "recharts": "1.8.5",
+    "swr": "0.1.5",
     "typescript": "3.6.4"
   },
   "scripts": {
@@ -39,9 +39,9 @@
     ]
   },
   "devDependencies": {
-    "@types/color-convert": "^1.9.0",
-    "@types/lodash": "^4.14.144",
-    "@types/rebass": "^4.0.3",
-    "@types/recharts": "^1.8.1"
+    "@types/color-convert": "1.9.0",
+    "@types/lodash": "4.14.144",
+    "@types/rebass": "4.0.3",
+    "@types/recharts": "1.8.1"
   }
 }
