@@ -1,11 +1,8 @@
 import React from 'react';
-import colorConvert from 'color-convert';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { BarChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import Region from './types/Region';
 
-const bars = ['connect', 'download', 'firstByte'];
-
-interface BreakdownChartProps {
+interface TotalResponseTimeChart {
   region: Region;
 }
 
@@ -26,14 +23,7 @@ const BreakdownChart: React.FC<BreakdownChartProps> = (props: BreakdownChartProp
       <YAxis />
       <Tooltip />
       <Legend />
-      {bars.map((bar: string, index: number) => (
-        <Bar
-          dataKey={bar}
-          stackId="a"
-          key={bar}
-          fill={`#${colorConvert.hsl.hex([100 + index * 45, 70, 50])}`}
-        />
-      ))}
+      <Line type="monotone" dataKey="total" stroke="#8884d8" activeDot={{ r: 8 }} />
     </BarChart>
   );
 };

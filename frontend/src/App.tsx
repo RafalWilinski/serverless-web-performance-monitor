@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
 import { Flex } from 'rebass';
+import { BarLoader } from 'react-spinners';
 import ProjectComponent from './Project';
 import Project from '../../bin/types/Project';
 import ProjectDetails from './ProjectDetails';
@@ -17,7 +18,11 @@ const App: React.FC = () => {
   console.log(!data || !metricsData);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <div style={{ margin: 20 }}>
+        <BarLoader color="#4A90E2" />
+      </div>
+    );
   }
 
   return (

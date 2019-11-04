@@ -34,8 +34,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
     <div>
       {metricsPerRegion.map((region) => (
         <div key={region.name}>
+          <Text fontSize={[3]} color="primary">
+            Region: {region.name}
+          </Text>
           <Text fontSize={[2]} color="primary">
-            {region.name}
+            Request Breakdown
           </Text>
           <BreakdownChart region={region} />
         </div>
