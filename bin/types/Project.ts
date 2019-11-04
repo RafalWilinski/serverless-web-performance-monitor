@@ -5,11 +5,12 @@ interface StringMap {
 export default interface Project {
   id: string;
   endpoint: string;
+  name: string;
   measureRequestDetails: boolean;
   measureLighthouseDetails: boolean;
   headers: StringMap;
   timeout: number; // in MS
-  method: "get" | "post";
+  method: 'get' | 'post';
 
   stats: {
     uptime: number;

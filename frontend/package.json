@@ -12,6 +12,7 @@
     "react": "16.11.0",
     "react-dom": "16.11.0",
     "react-scripts": "3.2.0",
+    "react-spinners": "^0.6.1",
     "rebass": "4.0.7",
     "recharts": "1.8.5",
     "swr": "0.1.5",
