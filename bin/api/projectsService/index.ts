@@ -1,11 +1,11 @@
-import { DynamoDB } from "aws-sdk";
-import { APIGatewayProxyHandler } from "aws-lambda";
+import { DynamoDB } from 'aws-sdk';
+import { APIGatewayProxyHandler } from 'aws-lambda';
 
-import response from "./utils/lambdaResponse";
-import uuid from "./utils/uuid";
+import response from './utils/lambdaResponse';
+import uuid from './utils/uuid';
 
 const dynamoDB = new DynamoDB.DocumentClient();
-const TableName = process.env.PROJECTS_TABLE_ARN!.split("/").slice(-1)[0];
+const TableName = process.env.PROJECTS_TABLE_ARN!.split('/').slice(-1)[0];
 
 const createProject = async (body: any) => {
   body.id = uuid();
@@ -21,7 +21,7 @@ const createProject = async (body: any) => {
   await dynamoDB
     .put({
       TableName,
-      Item: body
+      Item: body,
     })
     .promise();
 };
@@ -29,22 +29,24 @@ const createProject = async (body: any) => {
 const getProjects = () =>
   dynamoDB
     .scan({
-      TableName
+      TableName,
     })
     .promise();
 
 export const handler: APIGatewayProxyHandler = async (event, _context) => {
-  if (event.httpMethod.toUpperCase() === "POST") {
+  if (event.httpMethod.toUpperCase() === 'POST') {
     try {
       return response({
-        project: await createProject(JSON.parse(event.body!))
+        project: await createProject(JSON.parse(event.body!)),
       });
     } catch (error) {
       return response({ error: JSON.stringify(error) }, 400);
     }
   } else {
     try {
-      return response({ projects: (await getProjects()).Items });
+      return response({
+        projects: ((await getProjects()).Items || []).sort((a: any, b: any) => a.id - b.id),
+      });
     } catch (error) {
       return response({ error: JSON.stringify(error) }, 400);
     }

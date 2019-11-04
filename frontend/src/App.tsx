@@ -1,57 +1,56 @@
-import React from 'react';
+import React, { useState } from 'react';
 import useSWR from 'swr';
-import { takeRight } from 'lodash';
-import colorConvert from 'color-convert';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { takeRight, groupBy } from 'lodash';
+import { Text, Box } from 'rebass';
+import BreakdownChart from './BreakdownChart';
+import HealthChart from './HealthChart';
 
 const apiUrl = 'https://mte4gv5azj.execute-api.us-east-1.amazonaws.com/prod';
 
 const _fetch = (query: string) => fetch(`${apiUrl}${query}`).then((res) => res.json());
 
 const App: React.FC = () => {
+  const [currentProjectId, setCurrentProjectId] = useState(0);
   const { data } = useSWR('/projects', _fetch);
-  const { data: metricsData, error } = useSWR(() => `/metrics?id=${data.projects[0].id}`, _fetch);
+  const { data: metricsData, error } = useSWR(() => `/metrics?id=${currentProjectId}`, _fetch);
+
+  console.log(!data || !metricsData);
 
   if (!data || !metricsData) {
     return <div>Loading...</div>;
   }
 
-  const chartData = takeRight(
-    metricsData.metrics.map((metric: any) => ({
+  const regionGrouppedMetrics = groupBy(metricsData.metrics, 'region');
+  const metricsPerRegion = Object.keys(regionGrouppedMetrics).map((regionName) => ({
+    name: regionName,
+    timings: regionGrouppedMetrics[regionName].map((metric: any) => ({
       name: metric.date,
       ...metric.timings,
     })),
-    72,
-  );
+    health: regionGrouppedMetrics[regionName].map((metric: any) => ({
+      name: metric.date,
+      status: metric.value,
+    })),
+  }));
 
-  const bars = ['total', 'dns', 'connect', 'tcp', 'firstByte'];
+  console.log(metricsPerRegion);
 
   return (
     <div className="App">
-      <BarChart
-        width={600}
-        height={300}
-        data={chartData as any[]}
-        margin={{
-          top: 20,
-          right: 30,
-          left: 20,
-          bottom: 5,
-        }}
-      >
-        <XAxis dataKey="date" tick={false} />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        {bars.map((bar: string, index: number) => (
-          <Bar
-            dataKey={bar}
-            stackId="a"
-            key={bar}
-            fill={`#${colorConvert.hsl.hex([100 + index * 45, 70, 50])}`}
-          />
-        ))}
-      </BarChart>
+      {data.projects.map((project: any) => (
+        <Box onClick={() => setCurrentProjectId(project.id)}>
+          {project.id} - {project.endpoint}
+        </Box>
+      ))}
+      {metricsPerRegion.map((region) => (
+        <div key={region.name}>
+          <Text fontSize={[2]} color="primary">
+            {region.name}
+          </Text>
+          <BreakdownChart region={region} />
+          <HealthChart region={region} />
+        </div>
+      ))}
     </div>
   );
 };
