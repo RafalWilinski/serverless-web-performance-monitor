@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import useSWR from 'swr';
 import { Flex } from 'rebass';
 import { BarLoader } from 'react-spinners';
-import ProjectComponent from './Project';
+import ProjectComponent from './components/Project';
 import Project from '../../bin/types/Project';
-import ProjectDetails from './ProjectDetails';
+import ProjectDetails from './components/ProjectDetails';
 
 const apiUrl = 'https://mte4gv5azj.execute-api.us-east-1.amazonaws.com/prod';
 

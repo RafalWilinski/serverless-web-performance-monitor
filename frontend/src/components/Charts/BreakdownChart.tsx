@@ -1,7 +1,7 @@
 import React from 'react';
 import colorConvert from 'color-convert';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
-import Region from './types/Region';
+import Region from '../../types/Region';
 
 const bars = ['connect', 'download', 'firstByte'];
 

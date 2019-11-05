@@ -1,6 +1,6 @@
 import React from 'react';
 import { Line, XAxis, YAxis, Tooltip, Legend, LineChart } from 'recharts';
-import Region from './types/Region';
+import Region from '../../types/Region';
 
 interface TotalResponseTimeChartProps {
   region: Region;

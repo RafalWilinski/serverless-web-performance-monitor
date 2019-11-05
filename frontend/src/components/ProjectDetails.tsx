@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Text } from 'rebass';
 import { takeRight, groupBy } from 'lodash';
-import BreakdownChart from './BreakdownChart';
+import BreakdownChart from './Charts/BreakdownChart';
 import { BarLoader } from 'react-spinners';
-import TotalResponseTimeChart from './TotalResponseTimeChart';
+import TotalResponseTimeChart from './Charts/TotalResponseTimeChart';
 import TimeRangePicker from './TimeRangePicker';
-import timeRanges from './timeRanges';
-import everyNth from './everyNth';
+import timeRanges from '../consts/timeRanges';
+import everyNth from '../utils/everyNth';
 
 interface ProjectDetailsProps {
   metricsData?: any;

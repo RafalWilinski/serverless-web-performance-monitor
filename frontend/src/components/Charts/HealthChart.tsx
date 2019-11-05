@@ -1,6 +1,6 @@
 import React from 'react';
 import { LineChart, Line } from 'recharts';
-import Region from './types/Region';
+import Region from '../../types/Region';
 
 interface HealthChartProps {
   region: Region;
