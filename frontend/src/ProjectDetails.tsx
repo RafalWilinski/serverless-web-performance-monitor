@@ -3,6 +3,7 @@ import { Text } from 'rebass';
 import { takeRight, groupBy } from 'lodash';
 import BreakdownChart from './BreakdownChart';
 import { BarLoader } from 'react-spinners';
+import TotalResponseTimeChart from './TotalResponseTimeChart';
 
 interface ProjectDetailsProps {
   metricsData?: any;
@@ -37,6 +38,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
           <Text fontSize={[3]} color="primary">
             Region: {region.name}
           </Text>
+          <Text fontSize={[2]} color="primary">
+            Response Times in time
+          </Text>
+          <TotalResponseTimeChart region={region} />
           <Text fontSize={[2]} color="primary">
             Request Breakdown
           </Text>

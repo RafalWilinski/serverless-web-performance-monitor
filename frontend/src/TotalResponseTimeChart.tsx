@@ -1,14 +1,17 @@
 import React from 'react';
-import { BarChart, Line, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { Line, XAxis, YAxis, Tooltip, Legend, LineChart } from 'recharts';
 import Region from './types/Region';
 
-interface TotalResponseTimeChart {
+interface TotalResponseTimeChartProps {
   region: Region;
 }
 
-const BreakdownChart: React.FC<BreakdownChartProps> = (props: BreakdownChartProps) => {
+const TotalResponseTimeChart: React.FC<TotalResponseTimeChartProps> = (
+  props: TotalResponseTimeChartProps,
+) => {
+  console.log(props.region);
   return (
-    <BarChart
+    <LineChart
       width={600}
       height={300}
       data={props.region.timings}
@@ -23,9 +26,9 @@ const BreakdownChart: React.FC<BreakdownChartProps> = (props: BreakdownChartProp
       <YAxis />
       <Tooltip />
       <Legend />
-      <Line type="monotone" dataKey="total" stroke="#8884d8" activeDot={{ r: 8 }} />
-    </BarChart>
+      <Line type="monotone" dataKey="total" stroke="#ff0000" activeDot={{ r: 2 }} dot={false} />
+    </LineChart>
   );
 };
 
-export default BreakdownChart;
+export default TotalResponseTimeChart;
