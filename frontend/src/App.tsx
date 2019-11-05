@@ -5,6 +5,7 @@ import { BarLoader } from 'react-spinners';
 import ProjectComponent from './components/Project';
 import Project from '../../bin/types/Project';
 import ProjectDetails from './components/ProjectDetails';
+import Footer from './components/Footer';
 
 const apiUrl = 'https://mte4gv5azj.execute-api.us-east-1.amazonaws.com/prod';
 
@@ -39,6 +40,7 @@ const App: React.FC = () => {
           </>
         ))}
       </Flex>
+      <Footer />
     </div>
   );
 };
