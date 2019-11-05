@@ -9,7 +9,6 @@ interface TotalResponseTimeChartProps {
 const TotalResponseTimeChart: React.FC<TotalResponseTimeChartProps> = (
   props: TotalResponseTimeChartProps,
 ) => {
-  console.log(props.region);
   return (
     <LineChart
       width={600}
@@ -25,8 +24,7 @@ const TotalResponseTimeChart: React.FC<TotalResponseTimeChartProps> = (
       <XAxis dataKey="date" tick={false} />
       <YAxis />
       <Tooltip />
-      <Legend />
-      <Line type="monotone" dataKey="total" stroke="#ff0000" activeDot={{ r: 2 }} dot={false} />
+      <Line type="monotone" dataKey="total" stroke="#4A90E2" activeDot={{ r: 2 }} dot={false} />
     </LineChart>
   );
 };
