@@ -1,6 +1,6 @@
 import React from 'react';
 import Project from '../../../bin/types/Project';
-import { Box, Text, Flex } from 'rebass';
+import { Text, Flex } from 'rebass';
 
 interface ProjectProps {
   project: Project;

@@ -11,10 +11,10 @@ const Footer: React.FC<FooterProps> = (props: FooterProps) => {
         bottom: 0,
       }}
     >
-      <a href="https://rwilinski.me" target="_blank" rel="noopener">
+      <a href="https://rwilinski.me" target="_blank" rel="noopener noreferrer">
         Made by Rafal Wilinski
       </a>
-      <a href="https://servicefull.cloud" target="_blank" rel="noopener">
+      <a href="https://servicefull.cloud" target="_blank" rel="noopener noreferrer">
         Servicefull
       </a>
     </Flex>
