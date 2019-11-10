@@ -43,17 +43,19 @@ class RootStack extends cdk.Stack {
     });
 
     const apiStack = new APIStack(this, 'perf-monitor-api', {
+      ...commonConfig,
       projectsTableArn: this.projectsTable.tableArn,
       metricsTableArn: this.metricsTable.tableArn,
     });
     new FrontendStack(this, 'perf-monitor-frontend', {
+      ...commonConfig,
       apiUrl: apiStack.api.url,
     });
 
-    regions.forEach((region: string) => {
-      new CollectorStack(this, `perf-monitor-collector-${region}`, {
+    regions.forEach((reg: string) => {
+      new CollectorStack(this, `perf-monitor-collector-${reg}`, {
         env: {
-          region,
+          region: reg,
         },
         baseRegion: region,
         cronPattern,

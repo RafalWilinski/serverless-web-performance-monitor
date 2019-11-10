@@ -7,7 +7,7 @@ import Project from '../../bin/types/Project';
 import ProjectDetails from './components/ProjectDetails';
 import Footer from './components/Footer';
 
-const apiUrl = 'https://ve43c97mg3.execute-api.us-west-2.amazonaws.com/prod';
+const apiUrl = 'https://vyp8gdgq4c.execute-api.us-east-1.amazonaws.com/prod';
 
 const _fetch = (query: string) => fetch(`${apiUrl}${query}`).then((res) => res.json());
 

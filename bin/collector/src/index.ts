@@ -22,13 +22,17 @@ const getAllProjects = async (): Promise<Project[]> => {
   return Items as Project[];
 };
 
-const insertMetrics = (metricsDatapoint: MetricsDatapoint) =>
-  dynamoDB
+const insertMetrics = (metricsDatapoint: MetricsDatapoint) => {
+  const [, , , , , resourceTypeId] = process.env.METRICS_TABLE_ARN!.split(':');
+  const TableName = resourceTypeId.split('/')[1];
+
+  return dynamoDB
     .put({
       TableName,
       Item: metricsDatapoint,
     })
     .promise();
+};
 
 const processProject = async (project: Project) => {
   console.log(`[PROJECT_${project.id}], URL: ${project.endpoint}`);
