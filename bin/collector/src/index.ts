@@ -1,18 +1,21 @@
-import { DynamoDB } from "aws-sdk";
-import { APIGatewayProxyHandler } from "aws-lambda";
-import * as request from "request-promise-native";
+import { DynamoDB } from 'aws-sdk';
+import { APIGatewayProxyHandler } from 'aws-lambda';
+import * as request from 'request-promise-native';
+import 'source-map-support/register';
+import Project from '../../types/Project';
+import MetricsDatapoint from '../../types/MetricsDatapoint';
+import response from './utils/lambdaResponse';
 
-import "source-map-support/register";
-import Project from "../../types/Project";
-import MetricsDatapoint from "../../types/MetricsDatapoint";
-import response from "./utils/lambdaResponse";
-
-const dynamoDB = new DynamoDB.DocumentClient();
+const [, , , region, , resourceTypeId] = process.env.PROJECTS_TABLE_ARN!.split(':');
+const TableName = resourceTypeId.split('/')[1];
+const dynamoDB = new DynamoDB.DocumentClient({
+  region,
+});
 
 const getAllProjects = async (): Promise<Project[]> => {
   const { Items } = await dynamoDB
     .scan({
-      TableName: process.env.PROJECTS_TABLE_ARN!.split("/").slice(-1)[0]
+      TableName,
     })
     .promise();
 
@@ -22,8 +25,8 @@ const getAllProjects = async (): Promise<Project[]> => {
 const insertMetrics = (metricsDatapoint: MetricsDatapoint) =>
   dynamoDB
     .put({
-      TableName: process.env.METRICS_TABLE_ARN!.split("/").slice(-1)[0],
-      Item: metricsDatapoint
+      TableName,
+      Item: metricsDatapoint,
     })
     .promise();
 
@@ -34,9 +37,9 @@ const processProject = async (project: Project) => {
     id: `${project.id}`,
     date: (+new Date()).toString(),
     region: process.env.AWS_REGION!,
-    unit: "Reachable",
-    metricName: "Health",
-    value: 0
+    unit: 'Reachable',
+    metricName: 'Health',
+    value: 0,
   };
 
   try {
@@ -46,12 +49,12 @@ const processProject = async (project: Project) => {
       headers: project.headers,
       timeout: project.timeout,
       time: project.measureRequestDetails,
-      resolveWithFullResponse: true
+      resolveWithFullResponse: true,
     }).promise();
-    const data = typeof response === "string" ? JSON.parse(response) : response;
+    const data = typeof response === 'string' ? JSON.parse(response) : response;
     const timings = {
       ...data.timings,
-      ...data.timingPhases
+      ...data.timingPhases,
     };
 
     healthMetric.value = 1;
@@ -66,9 +69,7 @@ const processProject = async (project: Project) => {
   }
 
   if (project.measureLighthouseDetails) {
-    console.log(
-      `[PROJECT_${project.id}] Running Lightouse test, URL: ${project.endpoint}`
-    );
+    console.log(`[PROJECT_${project.id}] Running Lightouse test, URL: ${project.endpoint}`);
     // to be added
   }
 
@@ -78,7 +79,7 @@ const processProject = async (project: Project) => {
 export const handler: APIGatewayProxyHandler = async (_, _context) => {
   const projects = await getAllProjects();
 
-  await Promise.all(projects.map(project => processProject(project)));
+  await Promise.all(projects.map((project) => processProject(project)));
 
   return response({ projects });
 };

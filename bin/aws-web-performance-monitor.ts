@@ -3,15 +3,14 @@ import cdk = require('@aws-cdk/core');
 
 import CollectorStack from './collector/collector';
 import FrontendStack from './frontend/frontend';
-import { Construct } from '@aws-cdk/core';
-import { GlobalTable } from '@aws-cdk/aws-dynamodb-global';
+import { Construct, RemovalPolicy } from '@aws-cdk/core';
 import { Table, AttributeType, BillingMode } from '@aws-cdk/aws-dynamodb';
 import APIStack from './api/api';
 
 const region = process.env.REGION || 'us-east-1';
 const regions = process.env.COLLECTOR_REGIONS
   ? process.env.COLLECTOR_REGIONS.split(',')
-  : ['us-east-1', 'eu-central-1', 'ap-southeast-2'];
+  : ['us-east-1', 'ap-southeast-2', 'us-west-2', 'eu-central-1'];
 const cronPattern = process.env.CRON_PATTERN || 'rate(5 minutes)';
 const commonConfig = {
   env: {
@@ -19,51 +18,74 @@ const commonConfig = {
   },
 };
 
+console.log(regions);
+
 class RootStack extends cdk.Stack {
   public readonly projectsTable: Table;
-  public readonly regionalMetricsTables: Table[];
+  public readonly metricsTable: Table;
 
   constructor(scope: Construct, id: string, props: cdk.StackProps) {
     super(scope, id, props);
 
-    this.regionalMetricsTables = new GlobalTable(this, 'metricsTable', {
+    this.metricsTable = new Table(this, 'metricsTable', {
       partitionKey: { name: 'id', type: AttributeType.STRING },
       sortKey: { name: 'date', type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       tableName: 'WebPerformanceMonitorMetrics',
-      regions,
-    }).regionalTables;
+      removalPolicy: RemovalPolicy.DESTROY,
+    });
 
     this.projectsTable = new Table(this, 'projectsTable', {
       partitionKey: { name: 'id', type: AttributeType.STRING },
       billingMode: BillingMode.PAY_PER_REQUEST,
       tableName: 'WebPerformanceMonitorProjects',
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
-    const apiStack = new APIStack(this, 'APIStack', {
+    const apiStack = new APIStack(this, 'perf-monitor-api', {
       projectsTableArn: this.projectsTable.tableArn,
-      metricsTableArn: this.regionalMetricsTables[0].tableArn,
+      metricsTableArn: this.metricsTable.tableArn,
     });
-    new FrontendStack(this, 'FrontendStack', {
+    new FrontendStack(this, 'perf-monitor-frontend', {
       apiUrl: apiStack.api.url,
+    });
+
+    regions.forEach((region: string) => {
+      new CollectorStack(this, `perf-monitor-collector-${region}`, {
+        env: {
+          region,
+        },
+        baseRegion: region,
+        cronPattern,
+        projectsTableArn: this.projectsTable.tableArn,
+        metricsTableArn: this.metricsTable.tableArn,
+      });
     });
   }
 }
 
 const app = new cdk.App();
-const root = new RootStack(app, 'RootStack', commonConfig);
 
-regions.map(
-  (region: string, index: number) =>
-    new CollectorStack(app, `CollectorStack-${region}`, {
-      env: {
-        region,
-      },
-      baseRegion: region,
-      cronPattern,
-      projectsTableArn: root.projectsTable.tableArn,
-      metricsTableArn: root.regionalMetricsTables[index].tableArn,
-    }),
-);
+new RootStack(app, 'perf-monitor', commonConfig);
+
+// new CollectorStack(app, `perf-monitor-collector-us-east-1`, {
+//   env: {
+//     region,
+//   },
+//   baseRegion: region,
+//   cronPattern,
+//   projectsTableArn: root.projectsTable.tableArn,
+//   metricsTableArn: root.metricsTable.tableArn,
+// });
+
+// new CollectorStack(app, `perf-monitor-collector-ap-southeast-2`, {
+//   env: {
+//     region: 'ap-southeast-2',
+//   },
+//   baseRegion: region,
+//   cronPattern,
+//   projectsTableArn: root.projectsTable.tableArn,
+//   metricsTableArn: root.metricsTable.tableArn,
+// });
 
 app.synth();

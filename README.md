@@ -10,6 +10,12 @@
 
 > Self-hosted, cloud-native monitoring solution for your page/endpoint speed from multiple locations around the world.
 
+## Prerequisites
+
+- AWS Account and credentials set in `~/.aws/credentials`
+- Node >10
+- Yarn or npm
+
 ## Install
 
 ```sh
@@ -22,9 +28,15 @@ yarn
 - `yarn build:frontend` builds only frontend
 - `yarn build:cdk` builds only CDK from TS to JS
 
+You can also pass following environment variable to customize your deployment:
+
+- `REGION`
+- `COLLECTOR_REGIONS`
+- `CRON_PATTERNS`
+
 ## Infrastructure
 
-![Infrastructure](./assets/infra.png "Infrastructure")
+![Infrastructure](./assets/infra.png 'Infrastructure')
 
 ## Author
 
