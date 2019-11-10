@@ -3,7 +3,7 @@ import { join } from 'path';
 import { writeFileSync } from 'fs';
 import { BucketDeployment, Source } from '@aws-cdk/aws-s3-deployment';
 import cloudfront = require('@aws-cdk/aws-cloudfront');
-import { Construct, RemovalPolicy } from '@aws-cdk/core';
+import { Construct, RemovalPolicy, CfnOutput } from '@aws-cdk/core';
 
 interface FrontendStackProps {
   apiUrl: string;
@@ -32,7 +32,7 @@ class FrontendStack extends Construct {
       destinationKeyPrefix: '/',
     });
 
-    new cloudfront.CloudFrontWebDistribution(this, 'Distribution', {
+    const cdn = new cloudfront.CloudFrontWebDistribution(this, 'Distribution', {
       originConfigs: [
         {
           s3OriginSource: {
@@ -41,6 +41,10 @@ class FrontendStack extends Construct {
           behaviors: [{ isDefaultBehavior: true }],
         },
       ],
+    });
+
+    new CfnOutput(this, 'cfn-distribution', {
+      value: cdn.domainName,
     });
   }
 }

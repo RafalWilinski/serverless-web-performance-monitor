@@ -68,24 +68,4 @@ const app = new cdk.App();
 
 new RootStack(app, 'perf-monitor', commonConfig);
 
-// new CollectorStack(app, `perf-monitor-collector-us-east-1`, {
-//   env: {
-//     region,
-//   },
-//   baseRegion: region,
-//   cronPattern,
-//   projectsTableArn: root.projectsTable.tableArn,
-//   metricsTableArn: root.metricsTable.tableArn,
-// });
-
-// new CollectorStack(app, `perf-monitor-collector-ap-southeast-2`, {
-//   env: {
-//     region: 'ap-southeast-2',
-//   },
-//   baseRegion: region,
-//   cronPattern,
-//   projectsTableArn: root.projectsTable.tableArn,
-//   metricsTableArn: root.metricsTable.tableArn,
-// });
-
 app.synth();
