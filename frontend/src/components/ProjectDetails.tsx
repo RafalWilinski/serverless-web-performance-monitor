@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Text } from 'rebass';
+import { Text, Box, Flex } from 'rebass';
 import { takeRight, groupBy } from 'lodash';
 import BreakdownChart from './Charts/BreakdownChart';
 import { BarLoader } from 'react-spinners';
@@ -58,9 +58,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
   };
 
   return (
-    <div>
+    <Flex flexWrap="wrap" mx={-2}>
       {metricsPerRegion.map((region) => (
-        <div key={region.name}>
+        <Box key={region.name} width={[1, 1, 1 / 2]} px={2}>
           <Text fontSize={[3]} color="primary">
             Region: {region.name}
           </Text>
@@ -73,9 +73,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
             Request Breakdown
           </Text>
           <BreakdownChart region={region} />
-        </div>
+        </Box>
       ))}
-    </div>
+    </Flex>
   );
 };
 

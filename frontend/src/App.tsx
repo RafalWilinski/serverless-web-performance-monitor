@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import useSWR from 'swr';
-import { Flex } from 'rebass';
+import { Flex, Box } from 'rebass';
 import { BarLoader } from 'react-spinners';
 import ProjectComponent from './components/Project';
 import Project from '../../bin/types/Project';
@@ -27,20 +27,17 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="App">
-      <Flex flexDirection="column" justifyContent="center" alignItems="center">
-        {data.projects.map((project: Project) => (
-          <>
-            <ProjectComponent
-              key={project.id}
-              project={project}
-              onClick={() => setCurrentProjectId(project.id)}
-            />
-            {project.id === currentProjectId && <ProjectDetails metricsData={metricsData} />}
-          </>
-        ))}
-      </Flex>
-      <Footer />
+    <div>
+      {data.projects.map((project: Project) => (
+        <>
+          <ProjectComponent
+            key={project.id}
+            project={project}
+            onClick={() => setCurrentProjectId(project.id)}
+          />
+          {project.id === currentProjectId && <ProjectDetails metricsData={metricsData} />}
+        </>
+      ))}
     </div>
   );
 };
