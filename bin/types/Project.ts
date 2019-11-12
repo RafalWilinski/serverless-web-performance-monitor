@@ -15,8 +15,7 @@ export default interface Project {
   stats: {
     uptime: number;
     downtime: number;
-    bodySize: number;
-    errors: number;
     meanResponse: number;
+    count: number;
   };
 }

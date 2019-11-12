@@ -30,7 +30,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
     timings: everyNth(
       takeRight(
         regionGrouppedMetrics[regionName].map((metric: any) => ({
-          name: metric.date,
+          name: new Date(metric.date).toUTCString(),
           ...metric.timings,
         })),
         takeRightCount,
@@ -50,9 +50,8 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
   }));
 
   const onRangeChange = (rangeName: string) => {
-    console.log(rangeName);
-
     const tr = timeRanges.find((timeRange) => timeRange.name === rangeName);
+
     setTakeEvery(tr!.takeEvery);
     setTakeRight(tr!.takeRightCount);
   };
@@ -61,7 +60,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ metricsData }: ProjectD
     <Flex flexWrap="wrap" mx={-2}>
       {metricsPerRegion.map((region) => (
         <Box key={region.name} width={[1, 1, 1 / 2]} px={2}>
-          <Text fontSize={[3]} color="primary">
+          <Text fontSize={[3]} color="primary" my={2}>
             Region: {region.name}
           </Text>
           <TimeRangePicker options={timeRanges.map((t) => t.name)} onChange={onRangeChange} />

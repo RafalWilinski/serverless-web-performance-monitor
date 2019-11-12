@@ -33,7 +33,7 @@ const App: React.FC = () => {
           <ProjectComponent
             key={project.id}
             project={project}
-            onClick={() => setCurrentProjectId(project.id)}
+            onClick={() => setCurrentProjectId(currentProjectId === project.id ? '-1' : project.id)}
           />
           {project.id === currentProjectId && <ProjectDetails metricsData={metricsData} />}
         </>

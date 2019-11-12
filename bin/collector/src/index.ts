@@ -34,6 +34,37 @@ const insertMetrics = (metricsDatapoint: MetricsDatapoint) => {
     .promise();
 };
 
+const updateAggregates = async (projectId: string, isHealthy: boolean, responseTime?: number) => {
+  const { Item: project } = await dynamoDB
+    .get({
+      Key: {
+        id: projectId,
+      },
+      TableName,
+    })
+    .promise();
+
+  const newResponseTime =
+    (project!.stats.meanResponse * project!.stats.count +
+      (responseTime || project!.stats.meanResponse)) /
+    (project!.stats.count + 1);
+
+  const UpdateExpression = isHealthy
+    ? 'ADD stats.uptime :inc, stats.count :inc SET stats.meanResponse = :responseTime'
+    : 'ADD stats.downtime :inc, stats.count :inc';
+
+  return dynamoDB
+    .update({
+      Key: {
+        id: projectId,
+      },
+      TableName,
+      ExpressionAttributeValues: { ':inc': 1, ':responseTime': newResponseTime },
+      UpdateExpression,
+    })
+    .promise();
+};
+
 const processProject = async (project: Project) => {
   console.log(`[PROJECT_${project.id}], URL: ${project.endpoint}`);
 
@@ -65,11 +96,14 @@ const processProject = async (project: Project) => {
 
     if (project.measureRequestDetails) {
       healthMetric.timings = timings;
+      await updateAggregates(project.id, true, timings.total);
     }
   } catch (error) {
     console.log(`[PROJECT_${project.id}] Error!`);
     console.error(error);
     healthMetric.value = 0;
+
+    await updateAggregates(project.id, false);
   }
 
   if (project.measureLighthouseDetails) {

@@ -30,9 +30,9 @@ yarn
 
 You can also pass following environment variable to customize your deployment:
 
-- `REGION`
-- `COLLECTOR_REGIONS`
-- `CRON_PATTERNS`
+- `REGION` - your base region where dashboard and projects table gets deployed
+- `COLLECTOR_REGIONS` - AWS regions where collectors should be deployed
+- `CRON_PATTERNS` - how frequently data should be gathered (by default it's every 5 minutes)
 
 ## Infrastructure
 

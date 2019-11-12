@@ -10,21 +10,31 @@ interface ProjectProps {
 const ProjectComponent: React.FC<ProjectProps> = (props: ProjectProps) => {
   return (
     <Flex
-      onClick={props.onClick}
-      width={'100%'}
+      flexDirection="row"
+      alignItems="center"
+      justifyContent="space-between"
       sx={{
         borderBottom: 'solid 1px #BBB',
         padding: 10,
         cursor: 'pointer',
       }}
-      flexDirection="column"
     >
-      <Text fontSize={[3]} fontWeight="bold">
-        {props.project.name || '<Name missing>'}
-      </Text>
-      <Text fontWeight="bold" color="#999" fontSize={[1]}>
-        {props.project.method.toUpperCase()} {props.project.endpoint}
-      </Text>
+      <Flex onClick={props.onClick} flexDirection="column">
+        <Text fontSize={[3]} fontWeight="bold">
+          {props.project.name || '<Name missing>'}
+        </Text>
+        <Text fontWeight="bold" color="#999" fontSize={[1]}>
+          {props.project.method.toUpperCase()} {props.project.endpoint}
+        </Text>
+      </Flex>
+      <Flex flexDirection="column" alignItems="right">
+        <Text fontSize={[2]} fontWeight="bold" textAlign="right">
+          Uptime: 95.64%
+        </Text>
+        <Text fontSize={[2]} fontWeight="bold" textAlign="right">
+          Mean response time: 852ms
+        </Text>
+      </Flex>
     </Flex>
   );
 };

@@ -15,6 +15,10 @@ const TimeRangePicker: React.FC<TimeRangePickerProps> = (props: TimeRangePickerP
         name="country"
         defaultValue="United States"
         onChange={(e: any) => props.onChange(e.target.value)}
+        sx={{
+          border: 0,
+          width: 140,
+        }}
       >
         {props.options.map((option) => (
           <option key={option}>{option}</option>

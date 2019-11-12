@@ -21,10 +21,17 @@ const TotalResponseTimeChart: React.FC<TotalResponseTimeChartProps> = (
         bottom: 5,
       }}
     >
-      <XAxis dataKey="date" tick={false} />
+      <XAxis dataKey="name" />
       <YAxis />
       <Tooltip />
-      <Line type="monotone" dataKey="total" stroke="#4A90E2" activeDot={{ r: 2 }} dot={false} />
+      <Line
+        type="monotone"
+        dataKey="total"
+        stroke="#333"
+        strokeWidth={3}
+        activeDot={{ r: 2 }}
+        dot={false}
+      />
     </LineChart>
   );
 };
