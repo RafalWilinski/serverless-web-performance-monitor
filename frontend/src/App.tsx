@@ -1,20 +1,23 @@
-import React, { useState } from 'react';
-import useSWR from 'swr';
-import { Flex, Box } from 'rebass';
-import { BarLoader } from 'react-spinners';
-import ProjectComponent from './components/Project';
-import Project from '../../bin/types/Project';
-import ProjectDetails from './components/ProjectDetails';
-import Footer from './components/Footer';
+import React, { useState } from "react";
+import useSWR from "swr";
+import { BarLoader } from "react-spinners";
+import ProjectComponent from "./components/Project";
+import Project from "../../bin/types/Project";
+import ProjectDetails from "./components/ProjectDetails";
+import Footer from "./components/Footer";
 
-const apiUrl = 'https://vyp8gdgq4c.execute-api.us-east-1.amazonaws.com/prod';
+const apiUrl = "https://vyp8gdgq4c.execute-api.us-east-1.amazonaws.com/prod";
 
-const _fetch = (query: string) => fetch(`${apiUrl}${query}`).then((res) => res.json());
+const _fetch = (query: string) =>
+  fetch(`${apiUrl}${query}`).then(res => res.json());
 
 const App: React.FC = () => {
-  const [currentProjectId, setCurrentProjectId] = useState('0');
-  const { data } = useSWR('/projects', _fetch);
-  const { data: metricsData, error } = useSWR(() => `/metrics?id=${currentProjectId}`, _fetch);
+  const [currentProjectId, setCurrentProjectId] = useState("0");
+  const { data } = useSWR("/projects", _fetch);
+  const { data: metricsData, error } = useSWR(
+    () => `/metrics?id=${currentProjectId}`,
+    _fetch
+  );
 
   console.log(!data || !metricsData);
 
@@ -27,15 +30,26 @@ const App: React.FC = () => {
   }
 
   return (
-    <div>
+    <div
+      style={{
+        maxWidth: 1360,
+        margin: "auto"
+      }}
+    >
       {data.projects.map((project: Project) => (
         <>
           <ProjectComponent
             key={project.id}
             project={project}
-            onClick={() => setCurrentProjectId(currentProjectId === project.id ? '-1' : project.id)}
+            onClick={() =>
+              setCurrentProjectId(
+                currentProjectId === project.id ? "-1" : project.id
+              )
+            }
           />
-          {project.id === currentProjectId && <ProjectDetails metricsData={metricsData} />}
+          {project.id === currentProjectId && (
+            <ProjectDetails metricsData={metricsData} />
+          )}
         </>
       ))}
     </div>
