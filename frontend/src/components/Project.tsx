@@ -29,10 +29,16 @@ const ProjectComponent: React.FC<ProjectProps> = (props: ProjectProps) => {
       </Flex>
       <Flex flexDirection="column" alignItems="right">
         <Text fontSize={[2]} fontWeight="bold" textAlign="right">
-          Uptime: 95.64%
+          Uptime:{' '}
+          {(
+            (props.project.stats.uptime /
+              (props.project.stats.uptime + props.project.stats.downtime)) *
+            100
+          ).toFixed(2)}
+          %
         </Text>
         <Text fontSize={[2]} fontWeight="bold" textAlign="right">
-          Mean response time: 852ms
+          Mean response time: {props.project.stats.meanResponse.toFixed(2)}ms
         </Text>
       </Flex>
     </Flex>
