@@ -15,8 +15,8 @@ interface ProjectDetailsProps {
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({
   metricsData
 }: ProjectDetailsProps) => {
-  const [takeEveryCount, setTakeEvery] = useState(1);
-  const [takeRightCount, setTakeRight] = useState(12);
+  const [takeEveryCount, setTakeEvery] = useState(4);
+  const [takeRightCount, setTakeRight] = useState(288);
 
   if (!metricsData) {
     return (
