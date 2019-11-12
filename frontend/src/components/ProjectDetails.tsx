@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { Text, Box, Flex } from "rebass";
 import { takeRight, groupBy } from "lodash";
+import * as d3 from "d3-array";
 import BreakdownChart from "./Charts/BreakdownChart";
 import { BarLoader } from "react-spinners";
 import TotalResponseTimeChart from "./Charts/TotalResponseTimeChart";
 import TimeRangePicker from "./TimeRangePicker";
 import timeRanges from "../consts/timeRanges";
 import everyNth from "../utils/everyNth";
+import ResponseTimeDistributionChart from "./Charts/ResponseTimeDistribution";
 
 interface ProjectDetailsProps {
   metricsData?: any;
@@ -28,29 +30,44 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
 
   const regionGrouppedMetrics = groupBy(metricsData.metrics, "region");
   const metricsPerRegion = Object.keys(regionGrouppedMetrics).map(
-    regionName => ({
-      name: regionName,
-      timings: everyNth(
-        takeRight(
-          regionGrouppedMetrics[regionName].map((metric: any) => ({
-            name: new Date(parseInt(metric.date)).toLocaleTimeString(),
-            ...metric.timings
-          })),
-          takeRightCount
+    regionName => {
+      const responseTimes = takeRight(
+        regionGrouppedMetrics[regionName].map(m => m.timings.total),
+        takeRightCount
+      );
+      const max = d3.max(responseTimes);
+      const min = d3.min(responseTimes);
+      const genHistogram = d3
+        .histogram()
+        .domain([min, max])
+        .thresholds(50);
+      const histogram = genHistogram(responseTimes);
+
+      return {
+        name: regionName,
+        timings: everyNth(
+          takeRight(
+            regionGrouppedMetrics[regionName].map((metric: any) => ({
+              name: new Date(parseInt(metric.date)).toLocaleTimeString(),
+              ...metric.timings
+            })),
+            takeRightCount
+          ),
+          takeEveryCount
         ),
-        takeEveryCount
-      ),
-      health: everyNth(
-        takeRight(
-          regionGrouppedMetrics[regionName].map((metric: any) => ({
-            name: new Date(parseInt(metric.date)).toLocaleTimeString(),
-            status: metric.value
-          })),
-          takeRightCount
+        health: everyNth(
+          takeRight(
+            regionGrouppedMetrics[regionName].map((metric: any) => ({
+              name: new Date(parseInt(metric.date)).toLocaleTimeString(),
+              status: metric.value
+            })),
+            takeRightCount
+          ),
+          takeEveryCount
         ),
-        takeEveryCount
-      )
-    })
+        histogram
+      };
+    }
   );
 
   const onRangeChange = (rangeName: string) => {
@@ -77,11 +94,15 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({
               onChange={onRangeChange}
             />
           </Flex>
-          <Text fontSize={[1]} color="secondary">
+          <Text fontSize={[1]} color="secondary" my={2}>
+            Response Times distribution
+          </Text>
+          <ResponseTimeDistributionChart region={region} />
+          <Text fontSize={[1]} color="secondary" my={2}>
             Response Times in time
           </Text>
           <TotalResponseTimeChart region={region} />
-          <Text fontSize={[1]} color="secondary">
+          <Text fontSize={[1]} color="secondary" my={2}>
             Request Breakdown
           </Text>
           <BreakdownChart region={region} />

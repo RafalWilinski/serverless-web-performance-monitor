@@ -19,8 +19,6 @@ const App: React.FC = () => {
     _fetch
   );
 
-  console.log(!data || !metricsData);
-
   if (!data) {
     return (
       <div style={{ margin: 20 }}>
