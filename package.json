@@ -12,7 +12,6 @@
     "build:chrome": "cd bin/collector/layer/ && ./prepare-chromium.sh",
     "cdk": "cdk",
     "synth": "cdk synth",
-    "deploy": "npm run build && cdk deploy RootStack",
     "deploy:all": "npm run build:cdk && npm run build:frontend && cdk deploy \"*\""
   },
   "devDependencies": {

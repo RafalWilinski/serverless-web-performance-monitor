@@ -1,21 +1,23 @@
-import { DynamoDB } from 'aws-sdk';
-import { APIGatewayProxyHandler } from 'aws-lambda';
-import * as request from 'request-promise-native';
-import 'source-map-support/register';
-import Project from '../../types/Project';
-import MetricsDatapoint from '../../types/MetricsDatapoint';
-import response from './utils/lambdaResponse';
+import { DynamoDB } from "aws-sdk";
+import { APIGatewayProxyHandler } from "aws-lambda";
+import * as request from "request-promise-native";
+import "source-map-support/register";
+import Project from "../../types/Project";
+import MetricsDatapoint from "../../types/MetricsDatapoint";
+import response from "./utils/lambdaResponse";
 
-const [, , , region, , resourceTypeId] = process.env.PROJECTS_TABLE_ARN!.split(':');
-const TableName = resourceTypeId.split('/')[1];
+const [, , , region, , resourceTypeId] = process.env.PROJECTS_TABLE_ARN!.split(
+  ":"
+);
+const TableName = resourceTypeId.split("/")[1];
 const dynamoDB = new DynamoDB.DocumentClient({
-  region,
+  region
 });
 
 const getAllProjects = async (): Promise<Project[]> => {
   const { Items } = await dynamoDB
     .scan({
-      TableName,
+      TableName
     })
     .promise();
 
@@ -23,24 +25,28 @@ const getAllProjects = async (): Promise<Project[]> => {
 };
 
 const insertMetrics = (metricsDatapoint: MetricsDatapoint) => {
-  const [, , , , , resourceTypeId] = process.env.METRICS_TABLE_ARN!.split(':');
-  const TableName = resourceTypeId.split('/')[1];
+  const [, , , , , resourceTypeId] = process.env.METRICS_TABLE_ARN!.split(":");
+  const TableName = resourceTypeId.split("/")[1];
 
   return dynamoDB
     .put({
       TableName,
-      Item: metricsDatapoint,
+      Item: metricsDatapoint
     })
     .promise();
 };
 
-const updateAggregates = async (projectId: string, isHealthy: boolean, responseTime?: number) => {
+const updateAggregates = async (
+  projectId: string,
+  isHealthy: boolean,
+  responseTime?: number
+) => {
   const { Item: project } = await dynamoDB
     .get({
       Key: {
-        id: projectId,
+        id: projectId
       },
-      TableName,
+      TableName
     })
     .promise();
 
@@ -50,17 +56,23 @@ const updateAggregates = async (projectId: string, isHealthy: boolean, responseT
     (project!.stats.count + 1);
 
   const UpdateExpression = isHealthy
-    ? 'ADD stats.uptime :inc, stats.count :inc SET stats.meanResponse = :responseTime'
-    : 'ADD stats.downtime :inc, stats.count :inc';
+    ? "ADD stats.uptime :inc, #statsCount :inc SET stats.meanResponse = :responseTime"
+    : "ADD stats.downtime :inc, #statsCount :inc";
 
   return dynamoDB
     .update({
       Key: {
-        id: projectId,
+        id: projectId
       },
       TableName,
-      ExpressionAttributeValues: { ':inc': 1, ':responseTime': newResponseTime },
-      UpdateExpression,
+      ExpressionAttributeValues: {
+        ":inc": 1,
+        ":responseTime": newResponseTime
+      },
+      ExpressionAttributeNames: {
+        "#statsCount": "stats.count"
+      },
+      UpdateExpression
     })
     .promise();
 };
@@ -72,9 +84,9 @@ const processProject = async (project: Project) => {
     id: `${project.id}`,
     date: (+new Date()).toString(),
     region: process.env.AWS_REGION!,
-    unit: 'Reachable',
-    metricName: 'Health',
-    value: 0,
+    unit: "Reachable",
+    metricName: "Health",
+    value: 0
   };
 
   try {
@@ -84,12 +96,12 @@ const processProject = async (project: Project) => {
       headers: project.headers,
       timeout: project.timeout,
       time: project.measureRequestDetails,
-      resolveWithFullResponse: true,
+      resolveWithFullResponse: true
     }).promise();
-    const data = typeof response === 'string' ? JSON.parse(response) : response;
+    const data = typeof response === "string" ? JSON.parse(response) : response;
     const timings = {
       ...data.timings,
-      ...data.timingPhases,
+      ...data.timingPhases
     };
 
     healthMetric.value = 1;
@@ -107,7 +119,9 @@ const processProject = async (project: Project) => {
   }
 
   if (project.measureLighthouseDetails) {
-    console.log(`[PROJECT_${project.id}] Running Lightouse test, URL: ${project.endpoint}`);
+    console.log(
+      `[PROJECT_${project.id}] Running Lightouse test, URL: ${project.endpoint}`
+    );
     // to be added
   }
 
@@ -117,7 +131,7 @@ const processProject = async (project: Project) => {
 export const handler: APIGatewayProxyHandler = async (_, _context) => {
   const projects = await getAllProjects();
 
-  await Promise.all(projects.map((project) => processProject(project)));
+  await Promise.all(projects.map(project => processProject(project)));
 
   return response({ projects });
 };
