@@ -16,7 +16,7 @@
     "@types/puppeteer": "1.20.2",
     "@types/request": "2.48.3",
     "@types/request-promise-native": "1.0.17",
-    "aws-sdk": "2.552.0",
+    "aws-sdk": "2.814.0",
     "typescript": "3.6.4"
   }
 }
